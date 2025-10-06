@@ -1,26 +1,30 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "title": {
-  "text": "Malaysia: Household Median Income by State (2022)",
-  "subtitle": "(13 States + 3 Federal Territories)",
-  "font": "Times New Roman",
-  "fontSize": 24,
-  "fontWeight": "bold",
-  "anchor": "middle",
-  "subtitleFont": "Garamond",
-  "subtitleFontSize": 16,
-  "subtitleFontWeight": "normal",
-  "subtitlePadding": 8
-},
-  "width": 600,
-  "height": 400,
+
+  "autosize": {"type": "fit", "contains": "padding"},
+  "width": "container",
+  "height": 500,
+
   "projection": {
-    "type": "equalEarth",
+    "type": "mercator",
     "center": [110, 4],
-    "scale": 2000,
-    "translate": [{"signal": "width/2 + 30"}, {"signal": "height/2 - 10"}]
+    "scale": 2500,
+    "translate": [{"signal": "width/2"}, {"signal": "height/2"}]
   },
+
   "layer": [
+    {
+      "data": {
+        "url": "ne_110m_graticules_30.json",
+        "format": {"type": "topojson", "feature": "ne_110m_graticules_30"}
+      },
+      "mark": {
+        "type": "geoshape",
+        "fill": null,
+        "stroke": "#cccccc",
+        "strokeWidth": 0.5
+      }
+    },
     {
       "data": {
         "url": "https://raw.githubusercontent.com/CHAISHOUZHENG/FIT3179-Ass2/refs/heads/main/gadm41_MYS_1.json",
@@ -84,10 +88,6 @@
         "strokeWidth": 0.5,
         "fill": null
       }
-    },
-    {
-      "data": {"graticule": {"step": [10, 10]}},
-      "mark": {"type": "geoshape", "stroke": "#cccccc", "strokeWidth": 0.5, "fill": null}
     }
   ]
 }

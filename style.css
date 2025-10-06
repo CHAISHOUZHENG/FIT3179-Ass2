@@ -1,0 +1,123 @@
+/* ===== General Page Styling ===== */
+body {
+  font-family: "Open Sans", sans-serif;
+  background-color: #f5f5f5;
+  margin: 0;
+  padding: 0;
+}
+
+/* ===== Page Container ===== */
+.page {
+  max-width: 1200px;
+  background: white;
+  margin: 40px auto;
+  padding: 30px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+/* ===== Main Title ===== */
+.main-title {
+  font-family: "Times New Roman", Times, serif;
+  font-weight: 700;
+  text-align: center;
+  font-size: 2.2rem;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  color: #222;
+  letter-spacing: 0.5px;
+  position: relative;
+}
+
+/* Subtle divider line below the main title */
+.main-title::after {
+  content: "";
+  display: block;
+  width: 120px;
+  height: 3px;
+  background-color: #ccc;
+  border-radius: 2px;
+  margin: 12px auto 25px auto;
+}
+
+/* ===== Headings ===== */
+h1 {
+  text-align: center;
+  font-size: 2em;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: #222;
+}
+
+h2 {
+  text-align: center;
+  font-size: 1.4em;
+  margin-top: 30px;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+/* ===== Chart Titles & Subtitles ===== */
+.chart-heading {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.chart-title {
+  font-family: "Poppins", "Times New Roman", serif;
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0;
+  color: #222;
+}
+
+.chart-subtitle {
+  display: block;
+  text-align: center;
+  font-family: "Garamond", serif;
+  font-size: 16px;
+  margin-top: 6px;
+  margin-bottom: 20px;
+  color: #555;
+  width: 100%;
+}
+
+/* Optional subtle divider below subtitles for visual polish */
+.chart-heading::after {
+  content: "";
+  display: block;
+  width: 80px;
+  height: 2px;
+  background-color: #ddd;
+  margin: 12px auto 0 auto;
+  border-radius: 2px;
+}
+
+/* ===== Visualization Containers ===== */
+.pure-g {
+  margin-bottom: 50px;
+}
+
+.vis-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin: auto;
+  text-align: center;
+}
+
+.vis-container > div,
+.vis-container > svg {
+  width: 100%;
+  max-width: 900px; /* control max width of chart */
+  height: auto;
+}
+
+/* ===== Footer ===== */
+footer {
+  text-align: center;
+  font-size: 0.9em;
+  color: #777;
+  margin-top: 40px;
+}

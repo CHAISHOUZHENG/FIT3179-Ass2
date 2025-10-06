@@ -1,15 +1,65 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Malaysia Choropleth</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Malaysia Income Visualizations</title>
+
+  <!-- PureCSS -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/purecss@2.0.3/build/pure-min.css"
+    integrity="sha384-cg6SkqEOCV1NbJoCu11+bm0NvBRc8IYLRGXkmNrqUBfTjmMYwNKPWBTIKyw9mHNJ"
+    crossorigin="anonymous"
+  />
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Vega Libraries -->
   <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
   <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
   <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
 </head>
-<body>
-  <div id="vis"></div>
 
-  <!-- Load external JavaScript file -->
+<body>
+  <div class="page">
+
+    <!-- ===== Main Title ===== -->
+    <h1 class="main-title">Malaysia Income Visualizations Dashboard</h1>
+
+
+    <!-- ===== Choropleth Map Section ===== -->
+    <div class="pure-g">
+      <div class="pure-u-1-1">
+        <h2 class="chart-title">Malaysia: Household Median Income by State (2022)</h2>
+        <p class="chart-subtitle">(13 States + 3 Federal Territories)</p>
+        <div id="vis_map" class="vis-container"></div>
+      </div>
+    </div>
+
+    <!-- ===== Area Chart Section ===== -->
+    <div class="pure-g">
+      <div class="pure-u-1-1">
+        <h2 class="chart-title">Median Household Income Trend Over Time</h2>
+        <p class="chart-subtitle">
+          Based on available survey years (1970–2022); data availability varies by state depending on earliest survey year.
+        </p>
+        <div id="vis_area" class="vis-container"></div>
+      </div>
+    </div>
+
+    <!-- ===== Footer ===== -->
+    <footer style="text-align:center; margin-top:40px; color:#666;">
+      Visualization by <strong>FIT3179 Chai Shou Zheng (34035958)</strong>
+    </footer>
+
+  </div>
+
+  <!-- Vega-Lite Script -->
   <script src="vega_lite_vis.js"></script>
 </body>
 </html>
