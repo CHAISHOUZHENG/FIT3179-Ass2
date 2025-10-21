@@ -513,6 +513,24 @@ footer {
   align-items: flex-start;
 }
 
+/* ===== Floating Info Card (Scatter Plot) ===== */
+.scatter-info-card {
+  position: absolute;
+  bottom: 230px; /* positions inside the scatter plot */
+  right: 60px; /* adjust horizontal placement */
+  width: 400px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 20px 25px;
+  color: #333333;
+  font-family: "Segoe UI", Roboto, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  text-align: justify;
+  opacity: 0.95;
+  transition: all 0.3s ease;
+}
 
 
 
