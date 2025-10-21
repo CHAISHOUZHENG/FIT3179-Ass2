@@ -1,1 +1,1 @@
-**The domain of this visualization is household income distribution across Malaysia’s administrative divisions (states and federal territories)**
+**The domain of this visualisation is Malaysia’s household income and cost-of-living, covering the country’s economic transformation and income trend from independence to the present. It focuses on median and mean household income, expenditure, poverty rate, cost-of-living index, and gender pay differences.**
