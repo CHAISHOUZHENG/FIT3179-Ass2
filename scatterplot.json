@@ -1,0 +1,107 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+  "description": "Scatter plot comparing median household income and poverty rate by state (2022) with dashed regression line and R² value, no grid lines.",
+
+  "width": 800,
+  "height": 500,
+
+  "data": {"url": "hies_state (2).csv"},
+
+  "transform": [
+  {
+    "calculate": "datum.state === 'Selangor' ? -15 : datum.state === 'KualaLumpur' ? -5 : datum.state === 'Putrajaya' ? -15 : datum.state === 'Pulau Pinang' ? -8 : -8",
+    "as": "label_offset"
+  },
+  {
+    "calculate": "datum.state === 'Selangor' ? -5 : datum.state === 'KualaLumpur' ? 25 : datum.state === 'Putrajaya' ? 0 : datum.state === 'Pulau Pinang' ? -15: 0",
+    "as": "label_dx"
+  }
+],
+
+  "layer": [
+    {
+      "mark": {
+        "type": "point",
+        "filled": true,
+        "opacity": 0.8,
+        "size": 160,
+        "color": "#4682b4",
+        "stroke": "white",
+        "strokeWidth": 1.2
+      },
+      "encoding": {
+        "x": {
+          "field": "income_median",
+          "type": "quantitative",
+          "title": "Median Household Income (RM)",
+          "scale": {"domain": [0, 11000]},
+          "axis": {
+            "values": [0, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 11000],
+            "format": ",",
+            "labelExpr": "format(datum.value, ',')",
+            "titleFontSize": 14,
+            "labelFontSize": 12,
+            "grid": false
+          }
+        },
+        "y": {
+          "field": "poverty",
+          "type": "quantitative",
+          "title": "Poverty Rate (%)",
+          "scale": {"domain": [0, 20]},
+          "axis": {"tickCount": 10, "format": ".0f", "grid": false}
+        },
+        "tooltip": [
+          {"field": "state", "title": "State"},
+          {"field": "income_median", "title": "Median Income (RM)", "format": ","},
+          {"field": "poverty", "title": "Poverty Rate (%)", "format": ".1f"}
+        ]
+      }
+    },
+
+    {
+      "mark": {
+        "type": "text",
+        "align": "center",
+        "baseline": "bottom",
+        "dy": {"expr": "datum.label_offset"},
+        "dx": {"expr": "datum.label_dx"},
+        "fontSize": 11,
+        "fontWeight": "bold",
+        "color": "black"
+      },
+      "encoding": {
+        "x": {"field": "income_median", "type": "quantitative"},
+        "y": {"field": "poverty", "type": "quantitative"},
+        "text": {"field": "state"}
+      }
+    },
+
+    {
+      "mark": {
+        "type": "line",
+        "color": "firebrick",
+        "strokeWidth": 2,
+        "strokeDash": [5, 5],
+        "opacity": 0.9
+      },
+      "transform": [
+        {
+          "regression": "poverty",
+          "on": "income_median",
+          "extent": [0, 10000]
+        }
+      ],
+      "encoding": {
+        "x": {"field": "income_median", "type": "quantitative"},
+        "y": {"field": "poverty", "type": "quantitative"}
+      }
+    }
+  ],
+
+  "config": {
+    "view": {"stroke": "transparent"},
+    "axis": {"labelFontSize": 12, "titleFontSize": 14},
+    "legend": null
+  }
+}

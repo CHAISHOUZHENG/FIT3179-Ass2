@@ -1,24 +1,25 @@
 {
 	"$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-	"description": "Interactive area chart for Malaysian median household income (1970–2022) with centered pandemic annotation.",
+	"description": "Interactive line chart for Malaysian mean and median household income (1970–2022) with pandemic annotation.",
 	"autosize": {
 		"type": "fit",
 		"contains": "padding"
 	},
 	"width": "container",
-	"height": 500,
+	"height": 600,
+	"width": 850,
 	"padding": {
 		"left": 60,
 		"right": 60,
-		"top": 20,
+		"top": 80,
 		"bottom": 60
 	},
 	"data": {
 		"url": "hh_income_state (2).csv"
 	},
-	"params": [
+	"params": [ 
 		{
-			"name": "selected_state",
+			"name": "selected_state", 
 			"value": "Johor",
 			"bind": {
 				"input": "select",
@@ -90,34 +91,67 @@
 		},
 		{
 			"filter": "year(datum.date) >= start_year && year(datum.date) <= end_year"
+		},
+		{
+			"fold": [
+				"income_mean",
+				"income_median"
+			],
+			"as": [
+				"Income Type",
+				"Income Value"
+			]
+		},
+		{
+			"calculate": "datum['Income Type'] == 'income_mean' ? 'Mean Income' : 'Median Income'",
+			"as": "Income Label"
 		}
 	],
 	"layer": [
 		{
 			"mark": {
-				"type": "area",
-				"line": true,
+				"type": "line",
 				"point": true,
-				"color": "#4C78A8",
-				"opacity": 0.4
+				"strokeWidth": 2
 			},
 			"encoding": {
 				"x": {
 					"field": "date",
 					"type": "temporal",
 					"timeUnit": "year",
-					"title": "Year"
+					"title": "Year",
+					"axis": {
+						"grid": false
+					}
 				},
 				"y": {
-					"field": "income_median",
+					"field": "Income Value",
 					"type": "quantitative",
-					"title": "Median Household Income (RM)",
+					"title": "Household Income (RM)",
 					"scale": {
 						"domain": [
 							0,
-							12000
+							14000
 						]
+					},
+					"axis": {
+						"grid": false
 					}
+				},
+				"color": {
+					"field": "Income Label",
+					"type": "nominal",
+					"scale": {
+						"domain": [
+							"Mean Income",
+							"Median Income"
+						],
+						"range": [
+							"#F58518",
+							"#4C78A8"
+						]
+					},
+					"title": "Income Type"
 				},
 				"tooltip": [
 					{
@@ -127,12 +161,129 @@
 						"title": "Year"
 					},
 					{
-						"field": "income_median",
+						"field": "Income Label",
+						"type": "nominal",
+						"title": "Type"
+					},
+					{
+						"field": "Income Value",
 						"type": "quantitative",
-						"title": "Median Income (RM)"
+						"title": "Income (RM)"
 					}
 				]
 			}
+		},
+		{
+			"transform": [
+				{
+					"filter": "1997 >= start_year && 1997 <= end_year"
+				},
+				{
+					"filter": "year(datum.date) == 1997"
+				}
+			],
+			"layer": [
+				{
+					"mark": {
+						"type": "rule",
+						"color": "red",
+						"strokeDash": [
+							4,
+							4
+						],
+						"strokeWidth": 1.5
+					},
+					"encoding": {
+						"x": {
+							"field": "date",
+							"type": "temporal",
+							"timeUnit": "year"
+						}
+					}
+				},
+				{
+					"mark": {
+						"type": "text",
+						"align": "center",
+						"dx": 45,
+						"dy": -40,
+						"color": "red",
+						"fontSize": 13,
+						"fontWeight": "bold"
+					},
+					"encoding": {
+						"x": {
+							"field": "date",
+							"type": "temporal",
+							"timeUnit": "year"
+						},
+						"y": {
+							"field": "Income Value",
+							"type": "quantitative",
+							"aggregate": "mean"
+						},
+						"text": {
+							"value": "1997: Asian Financial Crisis"
+						}
+					}
+				}
+			]
+		},
+		{
+			"transform": [
+				{
+					"filter": "2012 >= start_year && 2012 <= end_year"
+				},
+				{
+					"filter": "year(datum.date) == 2012"
+				}
+			],
+			"layer": [
+				{
+					"mark": {
+						"type": "rule",
+						"color": "red",
+						"strokeDash": [
+							4,
+							4
+						],
+						"strokeWidth": 1.5
+					},
+					"encoding": {
+						"x": {
+							"field": "date",
+							"type": "temporal",
+							"timeUnit": "year"
+						}
+					}
+				},
+				{
+					"mark": {
+						"type": "text",
+						"align": "center",
+						"dx": -20,
+						"dy": -120,
+						"color": "red",
+						"fontSize": 13,
+						"fontWeight": "bold"
+					},
+					"encoding": {
+						"x": {
+							"field": "date",
+							"type": "temporal",
+							"timeUnit": "year"
+						},
+						"y": {
+							"field": "Income Value",
+							"type": "quantitative",
+							"aggregate": "mean"
+						},
+						"text": {
+							"value": "2012: Minimum Wage Policy Changes"
+						}
+					}
+				}
+			]
 		},
 		{
 			"transform": [
@@ -166,8 +317,8 @@
 					"mark": {
 						"type": "text",
 						"align": "center",
-						"dx": 45,
-						"dy": 10,
+						"dx": -15,
+						"dy": -110,
 						"color": "red",
 						"fontSize": 13,
 						"fontWeight": "bold"
@@ -179,12 +330,12 @@
 							"timeUnit": "year"
 						},
 						"y": {
-							"field": "income_median",
+							"field": "Income Value",
 							"type": "quantitative",
 							"aggregate": "mean"
 						},
 						"text": {
-							"value": "2020: Sharp decline due to pandemic, recovery by 2022."
+							"value": "2020: COVID-19"
 						}
 					}
 				}

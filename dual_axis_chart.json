@@ -1,0 +1,60 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Dual-axis chart: Median Income vs Household Expenditure by State (Malaysia).",
+  "data": {"url": "hies_state (2).csv"},
+  "width": "container",
+  "height": 450,
+
+  "layer": [
+    {
+      "mark": {"type": "bar", "color": "#4C78A8", "opacity": 0.75},
+      "encoding": {
+        "x": {
+          "field": "state",
+          "type": "nominal",
+          "sort": {"field": "income_median", "order": "descending"},
+          "axis": {"labelAngle": -45, "title": "State"}
+        },
+        "y": {
+          "field": "income_median",
+          "type": "quantitative",
+          "title": "Household Income / Expenditure (RM)",
+          "axis": {"grid": false}
+        },
+        "tooltip": [
+          {"field": "state", "title": "State"},
+          {"field": "income_median", "title": "Median Income (RM)", "format": ","}
+        ]
+      }
+    },
+    {
+      "mark": {
+        "type": "line",
+        "color": "#9ACD32",
+        "strokeWidth": 2,
+        "point": {"filled": true, "color": "#9ACD32", "size": 70}
+      },
+      "encoding": {
+        "x": {
+          "field": "state",
+          "type": "nominal",
+          "sort": {"field": "income_median", "order": "descending"}
+        },
+        "y": {
+          "field": "expenditure_mean",
+          "type": "quantitative"
+        },
+        "tooltip": [
+          {"field": "state", "title": "State"},
+          {"field": "expenditure_mean", "title": "Mean Expenditure (RM)", "format": ","}
+        ]
+      }
+    }
+  ],
+
+  "config": {
+    "axis": {"labelFontSize": 12, "titleFontSize": 14},
+    "view": {"stroke": "transparent"},
+    "legend": {"labelFontSize": 12, "titleFontSize": 14}
+  }
+}

@@ -1,0 +1,97 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Lollipop chart of Cost of Living Index (2024).",
+  "data": {"url": "ASEAN_Cost_of_Living.csv"},
+  "height": 500,
+  "width": 600,
+  "layer": [
+    {
+      "mark": {"type": "rule", "strokeWidth": 3, "tooltip": false},
+      "encoding": {
+        "x": {"datum": 0},
+        "x2": {"field": "Cost of Living Index"},
+        "y": {"field": "Country"},
+        "color": {
+          "condition": {"test": "datum.Country === 'Malaysia'", "value": "#2E8B57"},
+          "value": "#b3b3b3"
+        },
+        "strokeWidth": {
+          "condition": {"test": "datum.Country === 'Malaysia'", "value": 5},
+          "value": 3
+        }
+      }
+    },
+    {
+      "mark": {"type": "circle", "size": 160},
+      "encoding": {
+        "x": {"field": "Cost of Living Index"},
+        "y": {"field": "Country"},
+        "color": {
+          "condition": {"test": "datum.Country === 'Malaysia'", "value": "#2E8B57"},
+          "value": "#007acc"
+        },
+        "size": {
+          "condition": {"test": "datum.Country === 'Malaysia'", "value": 200},
+          "value": 160
+        },
+        "tooltip": [
+          {"field": "Country", "type": "nominal"},
+          {
+            "field": "Cost of Living Index",
+            "title": "Cost of Living Index",
+            "type": "quantitative",
+            "format": ".1f"
+          }
+        ]
+      }
+    },
+    {
+      "transform": [
+        {
+          "filter": "test(/^(Norway|Denmark|Singapore|Malaysia|Indonesia|Nepal|India)$/i, datum.Country)"
+        }
+      ],
+      "mark": {
+        "type": "text",
+        "align": "left",
+        "dx": 10,
+        "fontSize": 12,
+        "fontWeight": "bold",
+        "tooltip": false
+      },
+      "encoding": {
+        "x": {"field": "Cost of Living Index"},
+        "y": {"field": "Country"},
+        "text": {
+          "field": "Cost of Living Index",
+          "type": "quantitative",
+          "format": ".1f"
+        },
+        "color": {
+          "condition": {"test": "datum.Country === 'Malaysia'", "value": "#2E8B57"},
+          "value": "#333333"
+        }
+      }
+    }
+  ],
+  "encoding": {
+    "x": {
+      "field": "Cost of Living Index",
+      "type": "quantitative",
+      "title": "Cost of Living Index",
+      "scale": {"zero": false}
+    },
+    "y": {
+      "field": "Country",
+      "type": "nominal",
+      "sort": {"field": "Cost of Living Index", "order": "descending"},
+      "title": "Country",
+      "axis": {"labelFontWeight": "bold"}
+    }
+  },
+  "config": {
+    "view": {"stroke": "transparent"},
+    "axis": {"labelFontSize": 12, "titleFontSize": 14, "grid": false},
+    "mark": {"tooltip": {"content": "data"}}
+  }
+}

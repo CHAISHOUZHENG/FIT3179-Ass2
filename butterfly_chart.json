@@ -1,0 +1,141 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Butterfly chart comparing male vs female median monthly salaries by job type (sorted descending, with labels).",
+  "data": {"url": "Median Monthly Basic Salary for Full Time Employee.csv"},
+  "config": {
+    "view": {"stroke": null},
+    "axis": {"grid": false, "labelFontSize": 12, "titleFontSize": 14}
+  },
+  "spacing": 0,
+  "vconcat": [
+    {
+      "hconcat": [
+        {
+          "width": 200,
+          "transform": [
+            {"calculate": "datum['Male RM'] * -1", "as": "Male_Negative"}
+          ],
+          "title": "Male",
+          "layer": [
+            {
+              "mark": {"type": "bar", "color": "#4C78A8", "opacity": 0.85},
+              "encoding": {
+                "y": {
+                  "field": "Job Type",
+                  "type": "ordinal",
+                  "sort": {"field": "Female RM", "order": "descending"}, 
+                  "axis": null
+                },
+                "x": {
+                  "field": "Male_Negative",
+                  "type": "quantitative",
+                  "axis": {
+                    "labelExpr": "abs(datum.value)",
+                    "title": null,
+                    "titleColor": "#4C78A8"
+                  }
+                },
+                "tooltip": [
+                  {"field": "Job Type", "title": "Job Type"},
+                  {"field": "Male RM", "title": "Male Median Salary (RM)", "format": ","}
+                ]
+              }
+            },
+            {
+              "mark": {
+                "type": "text",
+                "align": "right",
+                "baseline": "middle",
+                "dx": -4,
+                "fontSize": 10,
+                "color": "#4C78A8"
+              },
+              "encoding": {
+                "y": {
+                  "field": "Job Type",
+                  "type": "ordinal",
+                  "sort": {"field": "Female RM", "order": "descending"}
+                },
+                "x": {"field": "Male_Negative", "type": "quantitative"},
+                "text": {"field": "Male RM", "type": "quantitative", "format": ","}
+              }
+            }
+          ]
+        },
+        {
+          "width": 200,
+          "view": {"stroke": null},
+          "mark": {
+            "type": "text",
+            "align": "center",
+            "baseline": "middle",
+            "fontSize": 11,
+            "fontWeight": "bold"
+          },
+          "encoding": {
+            "y": {
+              "field": "Job Type",
+              "type": "ordinal",
+              "sort": {"field": "Female RM", "order": "descending"},
+              "axis": null
+            },
+            "text": {"field": "Job Type"}
+          }
+        },
+        {
+          "width": 200,
+          "title": "Female",
+          "layer": [
+            {
+              "mark": {"type": "bar", "color": "#E57373", "opacity": 0.85},
+              "encoding": {
+                "y": {
+                  "field": "Job Type",
+                  "type": "ordinal",
+                  "sort": {"field": "Female RM", "order": "descending"},
+                  "axis": null
+                },
+                "x": {
+                  "field": "Female RM",
+                  "type": "quantitative",
+                  "axis": {"title": null, "titleColor": "red"}
+                },
+                "tooltip": [
+                  {"field": "Job Type", "title": "Job Type"},
+                  {"field": "Female RM", "title": "Female Median Salary (RM)", "format": ","}
+                ]
+              }
+            },
+            {
+              "mark": {
+                "type": "text",
+                "align": "left",
+                "baseline": "middle",
+                "dx": 4,
+                "fontSize": 10,
+                "color": "red"
+              },
+              "encoding": {
+                "y": {
+                  "field": "Job Type",
+                  "type": "ordinal",
+                  "sort": {"field": "Female RM", "order": "descending"}
+                },
+                "x": {"field": "Female RM", "type": "quantitative"},
+                "text": {"field": "Female RM", "type": "quantitative", "format": ","}
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "mark": {"type": "text", "align": "center", "fontSize": 14},
+      "encoding": {
+        "text": {"value": "Median Monthly Salary (RM)"},
+        "x": {"value": 350},
+        "y": {"value": 10}
+      }
+    }
+  ]
+}

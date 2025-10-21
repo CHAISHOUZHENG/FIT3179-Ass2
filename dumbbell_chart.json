@@ -1,0 +1,120 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Dumbbell chart comparing mean and median household income by state (2022), sorted by income gap.",
+
+  "width": 900,
+  "height": 600,
+
+  "data": {"url": "hh_income_state (2).csv"},
+
+  "transform": [
+    {"filter": "year(datum.date) == 2022"},
+    {
+      "joinaggregate": [
+        {"op": "max", "field": "income_mean", "as": "mean_income"},
+        {"op": "max", "field": "income_median", "as": "median_income"}
+      ],
+      "groupby": ["state"]
+    },
+    {"calculate": "datum.mean_income - datum.median_income", "as": "income_gap"},
+    {"fold": ["income_median", "income_mean"], "as": ["type", "income"]},
+    {"calculate": "toNumber(datum.income)", "as": "income_numeric"},
+    {
+      "calculate": "datum.type == 'income_mean' ? 'Mean Income' : 'Median Income'",
+      "as": "type_label"
+    }
+  ],
+
+  "encoding": {
+    "x": {
+      "field": "income_numeric",
+      "type": "quantitative",
+      "title": "Household Income (RM)",
+      "scale": {"domain": [0, 14000]},
+      "axis": {
+        "values": [1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 11000, 12000, 13000, 14000],
+        "tickCount": 14,
+        "format": ",",
+        "labelExpr": "format(datum.value, ',')",
+        "labelOverlap": false,
+        "grid": false,
+        "labelAngle": 0
+      }
+    },
+    "y": {
+      "field": "state",
+      "type": "nominal",
+      "title": "State",
+      "sort": {"field": "income_gap", "order": "descending"},
+      "axis": {
+        "offset": 10,
+        "ticks": false,
+        "domain": true,
+        "labelFontWeight": "bold",
+        "labelFontSize": 13,
+        "labelPadding": 8,
+        "titleFontWeight": "bold",
+        "titlePadding": 10
+      }
+    }
+  },
+
+  "layer": [
+    {
+      "mark": {"type": "line", "strokeWidth": 2, "color": "#b3b3b3"},
+      "encoding": {"detail": {"field": "state"}}
+    },
+    {
+      "mark": {"type": "point", "filled": true, "size": 120},
+      "encoding": {
+        "color": {
+          "field": "type_label",
+          "type": "nominal",
+          "scale": {
+            "domain": ["Median Income", "Mean Income"],
+            "range": ["#1f77b4", "#ff7f0e"]
+          },
+          "title": "Income Type",
+          "legend": {"orient": "bottom"}
+        },
+        "tooltip": [
+          {"field": "state", "title": "State"},
+          {"field": "type_label", "title": "Income Type"},
+          {"field": "income_numeric", "title": "Income (RM)", "format": ","},
+          {"field": "income_gap", "title": "Gap (Mean − Median) (RM)", "format": ","}
+        ]
+      }
+    },
+    {
+      "mark": {
+        "type": "text",
+        "align": "center",
+        "baseline": "bottom",
+        "dy": -8,
+        "fontSize": 11,
+        "fontWeight": "bold",
+        "color": "#444"
+      },
+      "encoding": {
+        "x": {
+          "aggregate": "mean",
+          "field": "income_numeric"
+        },
+        "y": {"field": "state"},
+        "text": {"type": "nominal", "field": "income_gap_label"}
+      },
+      "transform": [
+        {
+          "calculate": "'RM ' + format(datum.income_gap, ',')",
+          "as": "income_gap_label"
+        }
+      ]
+    }
+  ],
+
+  "config": {
+    "view": {"stroke": "transparent"},
+    "axis": {"labelFontSize": 12, "titleFontSize": 14},
+    "legend": {"labelFontSize": 12, "titleFontSize": 13}
+  }
+}

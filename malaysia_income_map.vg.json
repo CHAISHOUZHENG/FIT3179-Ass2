@@ -1,93 +1,161 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Choropleth map of Malaysia household income with region, income type, and year controls (1970–2022).",
 
   "autosize": {"type": "fit", "contains": "padding"},
   "width": "container",
-  "height": 500,
+  "height": 520,
+
+  "params": [
+    {
+      "name": "map_region",
+      "value": "Malaysia",
+      "bind": {
+        "input": "select",
+        "options": ["Malaysia", "West Malaysia", "East Malaysia (Borneo)"],
+        "name": "Map Region: "
+      }
+    },
+    {
+      "name": "income_type",
+      "value": "income_median",
+      "bind": {
+        "input": "select",
+        "options": ["income_median", "income_mean"],
+        "labels": ["Median Income", "Mean Income"],
+        "name": "Income Type: "
+      }
+    },
+    {
+      "name": "selected_year",
+      "value": 2022,
+      "bind": {
+        "input": "select",
+        "options": [
+          2022,2020,2019,2016,2014,2012,2009,2007,2004,2002,
+          1999,1997,1995,1992,1989,1987,1984,1979,1976,1974,1970
+        ],
+        "name": "Year: "
+      }
+    }
+  ],
 
   "projection": {
-    "type": "mercator",
-    "center": [110, 4],
-    "scale": 2500,
-    "translate": [{"signal": "width/2"}, {"signal": "height/2"}]
+  "type": "mercator",
+  "center": {
+    "signal": "map_region == 'Malaysia' ? [110.5, 3.8] : map_region == 'West Malaysia' ? [102.3, 4.2] : [114.0, 3.5]"
   },
+  "scale": {
+    "signal": "map_region == 'Malaysia' ? 2700 : map_region == 'West Malaysia' ? 4200 : 4100"
+  },
+  "translate": [
+    {
+      "signal": "map_region == 'East Malaysia (Borneo)' ? width / 2 - 10 : width / 2 + 60"
+    },
+    {
+      "signal": "map_region == 'East Malaysia (Borneo)' ? height / 2 + 30 : height / 2 + 10"
+    }
+  ]
+},
 
   "layer": [
     {
       "data": {
-        "url": "ne_110m_graticules_30.json",
-        "format": {"type": "topojson", "feature": "ne_110m_graticules_30"}
+        "url": "ne_110m_ocean.json",
+        "format": {"type": "topojson", "feature": "ne_110m_ocean"}
       },
+      "mark": {"type": "geoshape", "fill": "#e6f2f8"}
+    },
+
+    {
+      "data": {"graticule": {"step": [10, 10]}},
       "mark": {
         "type": "geoshape",
-        "fill": null,
         "stroke": "#cccccc",
-        "strokeWidth": 0.5
+        "strokeWidth": 1.0,
+        "fill": null
       }
     },
+
     {
-      "data": {
-        "url": "https://raw.githubusercontent.com/CHAISHOUZHENG/FIT3179-Ass2/refs/heads/main/gadm41_MYS_1.json",
-        "format": {"type": "topojson", "feature": "gadm41_MYS_1"}
-      },
+      "data": {"url": "hh_income_state.csv"},
       "transform": [
+        {"filter": "datum.date == selected_year"},
         {
-          "lookup": "properties.NAME_1",
+          "calculate": "income_type == 'income_median' ? datum.income_median : datum.income_mean",
+          "as": "selected_income"
+        },
+        {
+          "lookup": "state",
           "from": {
             "data": {
-              "url": "https://raw.githubusercontent.com/CHAISHOUZHENG/FIT3179-Ass2/refs/heads/main/hh_income_state%20(2).csv"
+              "url": "gadm41_MYS_1.json",
+              "format": {"type": "topojson", "feature": "gadm41_MYS_1"}
             },
-            "key": "state",
-            "fields": ["date", "income_median"]
-          }
+            "key": "properties.NAME_1"
+          },
+          "as": "geo"
         },
-        {"filter": "datum.date == '1/1/2022'"},
-        {"calculate": "'RM ' + format(datum.income_median, ',')", "as": "income_label"},
         {
-          "calculate": "datum.income_median <= 5000 ? 'Low (< RM5,000)' : datum.income_median <= 6500 ? 'Lower-middle (RM5,001–RM6,500)' : datum.income_median <= 8000 ? 'Upper-middle (RM6,501–RM8,000)' : 'High (> RM8,000)'",
-          "as": "income_group"
+          "calculate": "isValid(datum.selected_income) && datum.selected_income != null && datum.selected_income != '' ? ('RM ' + format(datum.selected_income, ',')) : 'No Data'",
+          "as": "income_label"
+        },
+        {
+          "calculate": "income_type == 'income_median' ? 'Median Income' : 'Mean Income'",
+          "as": "income_mode"
         }
       ],
-      "mark": {"type": "geoshape"},
+
+      "mark": {"type": "geoshape", "stroke": "white", "strokeWidth": 0.6},
+
       "encoding": {
+        "shape": {"field": "geo", "type": "geojson"},
         "color": {
-          "field": "income_group",
-          "type": "nominal",
-          "scale": {
-            "domain": [
-              "Low (< RM5,000)",
-              "Lower-middle (RM5,001–RM6,500)",
-              "Upper-middle (RM6,501–RM8,000)",
-              "High (> RM8,000)"
-            ],
-            "range": ["#deebf7", "#9ecae1", "#4292c6", "#084594"]
+          "condition": {
+            "test": "isValid(datum.selected_income) && datum.selected_income != null && datum.selected_income != ''",
+            "field": "selected_income",
+            "type": "quantitative",
+            "scale": {"scheme": "greens"},
+            "legend": {
+              "title": {"signal": "income_type == 'income_median' ? 'Median Income (RM)' : 'Mean Income (RM)'"},
+              "format": ".0f",
+              "titleFontSize": 16,
+              "labelFontSize": 11,
+              "orient": "right",
+              "gradientLength": 330,
+              "gradientThickness": 18
+            }
           },
-          "legend": {
-            "title": "Income Groups",
-            "titleFontSize": 16,
-            "labelFontSize": 10,
-            "titlePadding": 10,
-            "labelOffset": 8
-          }
+          "value": "#d9d9d9"
         },
         "tooltip": [
-          {"field": "properties.NAME_1", "type": "nominal", "title": "State"},
-          {"field": "income_label", "type": "nominal", "title": "Median Income"},
-          {"field": "income_group", "type": "nominal", "title": "Group"}
+          {"field": "state", "type": "nominal", "title": "State"},
+          {"field": "income_mode", "type": "nominal", "title": "Income Type"},
+          {"field": "income_label", "type": "nominal", "title": "Income"},
+          {"field": "date", "type": "quantitative", "title": "Year"}
         ]
       }
     },
     {
       "data": {
-        "url": "https://raw.githubusercontent.com/CHAISHOUZHENG/FIT3179-Ass2/refs/heads/main/gadm41_MYS_1.json",
+        "url": "gadm41_MYS_1.json",
         "format": {"type": "topojson", "feature": "gadm41_MYS_1"}
       },
       "mark": {
         "type": "geoshape",
-        "stroke": "white",
-        "strokeWidth": 0.5,
+        "stroke": "#444444",
+        "strokeWidth": 1.2,
+        "opacity": 0.7,
         "fill": null
       }
+    },
+
+    {
+      "data": {
+        "url": "gadm41_MYS_1.json",
+        "format": {"type": "topojson", "feature": "gadm41_MYS_1"}
+      },
+      "mark": {"type": "geoshape", "fill": null, "stroke": "#000000", "strokeWidth": 0.8}
     }
   ]
 }
